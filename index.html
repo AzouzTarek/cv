@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CV — Tarek Azouz</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --accent:#111;
+      --muted:#666;
+      --gap:18px;
+      --max:1000px;
+      --sidebar-w:320px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;background:var(--bg);color:var(--accent)}
+
+    .wrap{max-width:var(--max);margin:28px auto;padding:28px;display:grid;grid-template-columns:var(--sidebar-w) 1fr;gap:32px}
+
+    /* SIDEBAR */
+    .sidebar{border-right:1px solid #eee;padding-right:var(--gap)}
+    .photo{width:82px;height:82px;border-radius:10px;background:#111;margin-bottom:10px}
+    .name{font-size:28px;letter-spacing:2px;margin:6px 0}
+    .role{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:1.6px}
+
+    .section{margin-top:22px}
+    .section h3{font-size:12px;margin:0 0 10px 0;text-transform:uppercase;letter-spacing:1.6px}
+    .contact p{margin:6px 0;color:var(--muted);font-size:14px}
+
+    .skills-list{display:flex;flex-direction:column;gap:8px}
+    .skill{font-size:14px;color:#111}
+
+    .lang-list{display:flex;flex-direction:column;gap:6px}
+    .lang{font-size:14px;color:var(--muted)}
+
+    /* MAIN */
+    .main{padding-left:var(--gap)}
+    .profile{margin-bottom:18px}
+    .profile p{margin:0;color:var(--muted);line-height:1.45}
+
+    .timeline{display:flex;flex-direction:column;gap:14px}
+    .item{padding:12px 14px;border-left:3px solid #111;background:linear-gradient(180deg,#fff,#fafafa);border-radius:6px}
+    .item h4{margin:0 0 6px 0}
+    .item .meta{font-size:13px;color:var(--muted);margin-bottom:6px}
+    .item p{margin:0;color:var(--muted);line-height:1.45}
+
+    .education .edu-item{margin-bottom:12px}
+
+    /* Responsive */
+    @media (max-width:880px){
+      .wrap{grid-template-columns:1fr;padding:18px}
+      .sidebar{border-right:0;padding-right:0;border-bottom:1px solid #eee;padding-bottom:18px}
+      .main{padding-left:0}
+    }
+
+    /* Print friendly */
+    @media print{
+      body{background:#fff;color:#000}
+      .wrap{box-shadow:none;margin:0;padding:0}
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <aside class="sidebar">
+      <div style="display:flex;align-items:center;gap:12px">
+        
+        <div>
+          <div class="name">TAREK AZOUZ</div>
+          <div class="role">Étudiant en DevOps</div>
+        </div>
+      </div>
+
+      <div class="section contact">
+        <h3>Contact</h3>
+        <p>📞 28642656</p>
+        <p>✉️ azouztarek47@gmail.com</p>
+        <p>📍 Rue Fatouma Bourguiba, Mhamdia, 1145 Tunis</p>
+      </div>
+
+      <div class="section">
+        <h3>Compétences</h3>
+        <div class="skills-list">
+          <div class="skill">Développement web & mobile (React / React Native / Flutter)</div>
+          <div class="skill">Backend Node.js / Express</div>
+          <div class="skill">DevOps & CI/CD, automatisation</div>
+          <div class="skill">Conception d'interfaces & UX</div>
+          <div class="skill">Méthodologies Agile / Scrum</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Langues</h3>
+        <div class="lang-list">
+          <div class="lang">Français — Courant</div>
+          <div class="lang">Arabe — Natif</div>
+          <div class="lang">Anglais — Intermédiaire</div>
+          <div class="lang">Allemand — Notions</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Soft skills</h3>
+        <div class="skills-list">
+          <div class="skill">Autonomie · Adaptabilité · Travail en équipe</div>
+          <div class="skill">Sens de l'innovation · Orientation UX</div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="profile">
+        <h2 style="margin:0 0 8px 0">Profil</h2>
+        <p>Étudiant en Master DevOps, titulaire d'une Licence en Développement des Systèmes d'Information. Dynamique, autonome et passionné par les technologies innovantes. Recherche d'opportunités pour contribuer à des projets alliant performance, expérience utilisateur et fiabilité.</p>
+      </section>
+
+      <section class="section">
+        <h3>Expériences</h3>
+        <div class="timeline">
+          <article class="item">
+            <h4>Stagiaire — Projet de Fin d'Études (PFE) — Unfrauded</h4>
+            <div class="meta">05/02/2024 - 31/05/2024</div>
+            <p>Participation au projet de fin d'études : conception, développement et tests. Contributions sur l'architecture et l'intégration des fonctionnalités principales.</p>
+          </article>
+
+          <article class="item">
+            <h4>Stagiaire Développement full stack — iObeya</h4>
+            <div class="meta">09/01/2023 – 05/02/2023</div>
+            <p>Participation à la conception et au développement d'une application mobile de gestion d'événements : réalisation d'interfaces et intégration des fonctionnalités principales, tests fonctionnels et amélioration continue.</p>
+          </article>
+
+          <article class="item">
+            <h4>Stagiaire — Insurance and Reinsurance STAR</h4>
+            <div class="meta">(Période fournie dans le CV)</div>
+            <p>Mission au département concerné — participation aux tâches opérationnelles et support.</p>
+          </article>
+
+        </div>
+      </section>
+
+      <section class="section education">
+        <h3>Formation</h3>
+        <div class="edu-item">
+          <h4>Master spécialisé en DevOps & Cloud — ISET Tozeur</h4>
+          <div class="meta">En cours</div>
+        </div>
+
+        <div class="edu-item">
+          <h4>Licence Appliquée en Informatique — Spécialité Développement des Systèmes Informatiques</h4>
+          <div class="meta">2024 — ISET Tozeur</div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</body>
+</html>
