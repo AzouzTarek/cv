@@ -73,23 +73,23 @@ pipeline {
       }
     }
   } // ✅ Fermeture du bloc stages
-
-  post {
+post {
     success {
       script {
+        // Slack notify via webhook (simple curl)
         sh '''
-          curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "✅ Build '${BUILD_NUMBER}' SUCCESS: '${JOB_NAME}'"
-          }' '"${SLACK_WEBHOOK}"'
+          curl -X POST -H 'Content-type: application/json' --data "{
+            \\"text\\": \\"Build ${env.BUILD_NUMBER} SUCCESS: ${env.JOB_NAME}\\"
+          }" ${SLACK_WEBHOOK}
         '''
       }
     }
     failure {
       script {
         sh '''
-          curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "❌ Build '${BUILD_NUMBER}' FAILED: '${JOB_NAME}'"
-          }' '"${SLACK_WEBHOOK}"'
+          curl -X POST -H 'Content-type: application/json' --data "{
+            \\"text\\": \\"Build ${env.BUILD_NUMBER} FAILED: ${env.JOB_NAME}\\"
+          }" ${SLACK_WEBHOOK}
         '''
       }
     }
