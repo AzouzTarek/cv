@@ -72,7 +72,7 @@ stage('Update GitOps Manifests') {
     }
   }
 }
-
+}
   post {
     success {
       script {
