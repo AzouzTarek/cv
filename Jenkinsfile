@@ -51,31 +51,27 @@ pipeline {
     /* -------------------------------
            🔥 GitOps : Update Manifests K8S
        -------------------------------- */
-    stage('Update GitOps Manifests') {
-      steps {
-        script {
-          // Clonage du repo GitOps et mise à jour de l'image
-        withCredentials([string(credentialsId: 'gitops-token', variable: 'GITOPS_TOKEN')]) {
-    sh """
-      rm -rf gitops
-      git clone https://${GITOPS_TOKEN}@github.com/AzouzTarek/k8s.git gitops
-      cd gitops
+stage('Update GitOps Manifests') {
+  steps {
+    withCredentials([string(credentialsId: 'gitops-token', variable: 'GITOPS_TOKEN')]) {
+      sh """
+        rm -rf gitops
+        git clone https://\$GITOPS_TOKEN@github.com/AzouzTarek/k8s.git gitops
+        cd gitops
 
-      sed -i 's|image: .*|image: azouztarek/moncv:${BUILD_NUMBER}|g' deployment.yaml
+        sed -i 's|image: .*|image: azouztarek/moncv:${BUILD_NUMBER}|g' deployment.yaml
 
-      git config user.email "jenkins@local"
-      git config user.name "Jenkins CI"
+        git config user.email "jenkins@local"
+        git config user.name "Jenkins CI"
 
-      git add deployment.yaml
-      git commit -m "Update image to azouztarek/moncv:${BUILD_NUMBER}"
+        git add deployment.yaml
+        git commit -m "Update image to azouztarek/moncv:${BUILD_NUMBER}"
 
-      git push https://${GITOPS_TOKEN}@github.com/AzouzTarek/k8s.git
-    """
-}
-
-      }
+        git push https://\$GITOPS_TOKEN@github.com/AzouzTarek/k8s.git
+      """
     }
-  } // <= fin du bloc stages
+  }
+}
 
   post {
     success {
