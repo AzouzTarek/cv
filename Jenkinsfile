@@ -78,7 +78,6 @@ pipeline {
 
 post {
   success {
-    withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK')]) {
       sh '''
         curl -X POST -H "Content-type: application/json" \
         --data '{"text":"✅ Build ${env.BUILD_NUMBER} SUCCESS: ${env.JOB_NAME}"}' \
