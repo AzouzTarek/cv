@@ -76,26 +76,40 @@ pipeline {
 
 
 
+
 post {
   success {
-      sh '''
-        curl -X POST -H "Content-type: application/json" \
-        --data '{"text":"✅ Build ${env.BUILD_NUMBER} SUCCESS: ${env.JOB_NAME}"}' \
-        "$SLACK_WEBHOOK"
-      '''
+    withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK')]) {
+      sh """
+        curl --fail-with-body -sS -X POST -H 'Content-type: application/json' \
+        --data @- "$SLACK" <<'JSON'
+        {
+          "text": "✅ Pipeline SUCCESS - Job: ${JOB_NAME} #${BUILD_NUMBER}"
+        }
+JSON
+      """
     }
+    echo "🎉 Build OK"
   }
   failure {
     withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK')]) {
-      sh '''
-        curl -X POST -H "Content-type: application/json" \
-        --data '{"text":"❌ Build ${env.BUILD_NUMBER} FAILED: ${env.JOB_NAME}"}' \
-        "$SLACK_WEBHOOK"
-      '''
+      sh """
+        curl --fail-with-body -sS -X POST -H 'Content-type: application/json' \
+        --data @- "$SLACK" <<'JSON'
+        {
+          "text": "❌ Pipeline FAILED - Job: ${JOB_NAME} #${BUILD_NUMBER}"
+        }
+JSON
+      """
     }
+    echo "❌ Build failed"
+  }
+  always {
+    archiveArtifacts artifacts: '**/*', allowEmptyArchive: true
+    sh 'docker image prune -f || true'
+    sh 'docker container prune -f || true'
   }
 }
-
 
 
 }
