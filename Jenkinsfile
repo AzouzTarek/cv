@@ -1,20 +1,25 @@
 
 pipeline {
   agent any
+
   environment {
-    DOCKERHUB_CRED = credentials('dockerhub-creds') // ID credential Jenkins
-    DOCKER_IMAGE = "azouztarek/moncv" // remplacer
-    GITOPS_TOKEN = credentials('gitops-token')
-    SLACK_WEBHOOK = credentials('slack-webhook') // ou integration via plug>
+    // Credentials Jenkins (type: Username with password)
+    DOCKERHUB_CRED = credentials('dockerhub-creds')
+    GITOPS_TOKEN   = credentials('gitops-token')      // token personnel/robot
+    SLACK_WEBHOOK  = credentials('slack-webhook')     // secret webhook URL
+    // Image Docker
+    DOCKER_IMAGE   = "azouztarek/moncv"
   }
+
+  // Poll SCM toutes les 5 min
   triggers {
-    pollSCM('H/5 * * * *') // every 5 minutes
+    pollSCM('H/5 * * * *')
   }
 
   stages {
     stage('Checkout') {
       steps {
-        // Récupération explicite du code depuis GitHub
+        // Clone explicite (branche main) du dépôt CV
         git branch: 'main', url: 'https://github.com/AzouzTarek/cv.git'
       }
     }
@@ -23,6 +28,7 @@ pipeline {
       steps {
         script {
           sh "docker --version"
+          // Contexte de build sur ./cv (adapté si le Dockerfile est dans ce dossier)
           sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ./cv"
         }
       }
@@ -31,50 +37,51 @@ pipeline {
     stage('Login and Push') {
       steps {
         script {
-          // ⚠️ Correction: retirer les &gt; et fermer correctement la chaîne
+          // Login DockerHub en stdin
           sh "echo ${DOCKERHUB_CRED_PSW} | docker login -u ${DOCKERHUB_CRED_USR} --password-stdin"
+
+          // Tag latest + push
           sh "docker tag ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ${DOCKER_IMAGE}:latest"
           sh "docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
           sh "docker push ${DOCKER_IMAGE}:latest"
         }
       }
     }
-  }
 
-  /* -------------------------------
-         🔥 GitOps : Update Manifests K8S
-         -------------------------------- */
-  stage('Update GitOps Manifests') {
-    steps {
-      script {
-        // ⚠️ Correction: retirer les &gt; et chemins tronqués
-        sh """
-          rm -rf gitops
-          git clone https://${GITOPS_TOKEN}@github.com/AzouzTarek/k8s.git gitops
-          cd gitops
+    /* -------------------------------
+           🔥 GitOps : Update Manifests K8S
+       -------------------------------- */
+    stage('Update GitOps Manifests') {
+      steps {
+        script {
+          // Clonage du repo GitOps et mise à jour de l'image
+          sh """
+            rm -rf gitops
+            git clone https://${GITOPS_TOKEN}@github.com/AzouzTarek/k8s.git gitops
+            cd gitops
 
-          # Mise à jour automatique de l'image dans deployment.yaml
-          sed -i 's|image: .*|image: ${DOCKER_IMAGE}:${BUILD_NUMBER}|g' deployment.yaml
+            # Mise à jour automatique de l'image dans deployment.yaml
+            sed -i 's|image: .*|image: ${DOCKER_IMAGE}:${BUILD_NUMBER}|g' deployment.yaml
 
-          git config user.email "jenkins@local"
-          git config user.name "Jenkins CI"
+            git config user.email "jenkins@local"
+            git config user.name "Jenkins CI"
 
-          git add deployment.yaml
-          git commit -m "Update image to ${DOCKER_IMAGE}:${BUILD_NUMBER}" || echo "No changes to commit"
-          git push
-        """
+            git add deployment.yaml
+            git commit -m "Update image to ${DOCKER_IMAGE}:${BUILD_NUMBER}" || echo "No changes to commit"
+            git push
+          """
+        }
       }
     }
-  }
+  } // <= fin du bloc stages
 
   post {
     success {
       script {
-        // Slack notify via webhook (simple curl)
         sh '''
           curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "Build ${env.BUILD_NUMBER} SUCCESS: ${env.JOB_NAME}"
-          }' ${SLACK_WEBHOOK}
+            "text": "✅ Build '${BUILD_NUMBER}' SUCCESS: '${JOB_NAME}'"
+          }' '"${SLACK_WEBHOOK}"'
         '''
       }
     }
@@ -82,8 +89,8 @@ pipeline {
       script {
         sh '''
           curl -X POST -H 'Content-type: application/json' --data '{
-            "text": "Build ${env.BUILD_NUMBER} FAILED: ${env.JOB_NAME}"
-          }' ${SLACK_WEBHOOK}
+            "text": "❌ Build '${BUILD_NUMBER}' FAILED: '${JOB_NAME}'"
+          }' '"${SLACK_WEBHOOK}"'
         '''
       }
     }
