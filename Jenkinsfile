@@ -29,7 +29,7 @@ pipeline {
         script {
           sh "docker --version"
           // Contexte de build sur ./cv (adapté si le Dockerfile est dans ce dossier)
-          sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ./cv"
+          sh "docker build -t ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ."
         }
       }
     }
