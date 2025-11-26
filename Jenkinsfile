@@ -81,8 +81,8 @@ post {
     withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK')]) {
       sh '''
         curl -X POST -H "Content-type: application/json" \
-        --data '{"text":"✅ Build ${BUILD_NUMBER} SUCCESS: ${JOB_NAME}"}' \
-        "$SLACK"
+        --data '{"text":"✅ Build ${env.BUILD_NUMBER} SUCCESS: ${env.JOB_NAME}"}' \
+        "$SLACK_WEBHOOK"
       '''
     }
   }
@@ -90,8 +90,8 @@ post {
     withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK')]) {
       sh '''
         curl -X POST -H "Content-type: application/json" \
-        --data '{"text":"❌ Build ${BUILD_NUMBER} FAILED: ${JOB_NAME}"}' \
-        "$SLACK"
+        --data '{"text":"❌ Build ${env.BUILD_NUMBER} FAILED: ${env.JOB_NAME}"}' \
+        "$SLACK_WEBHOOK"
       '''
     }
   }
